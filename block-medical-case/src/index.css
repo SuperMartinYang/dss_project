@@ -12,3 +12,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.MainContent {
+  padding: 2% 10% 10% 5%;
+}
+
+.panel {
+  background-color: grey;
+}
