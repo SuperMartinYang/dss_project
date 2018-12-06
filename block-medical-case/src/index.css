@@ -16,7 +16,26 @@ code {
 .MainContent {
   padding: 2% 10% 10% 5%;
 }
-
+.content {
+  background-color: darkseagreen;
+  min-height: 900px;
+}
 .panel {
-  background-color: grey;
+  background-color: lightskyblue;
+}
+
+.buttonPanel {
+  background-color: gray;
+  margin: 20px;
+  text-align: center;
+}
+
+.bar {
+  background-color: lightcoral;
+  padding-left: 5%;
+  min-height: 900px;
+}
+
+.Outer {
+  flex: 1;
 }

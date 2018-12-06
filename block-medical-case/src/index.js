@@ -19,6 +19,7 @@ const MainCnt = () => (
   defaultProvider={(cb) => cb(new Web3(new Web3.providers.HttpProvider("http://localhost:7545")))}
   loading="Loading..."
   error={(err) => `Connection error: ${err.message}`}
+  className="Outer"
   >
     <App />
   </Web3Provider>

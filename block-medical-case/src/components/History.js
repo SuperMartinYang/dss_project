@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Col, Row, FormControl, Button, ControlLabel, HelpBlock} from 'react-bootstrap';
+import { Form, FormGroup, Col, Row, FormControl, Button, ControlLabel} from 'react-bootstrap';
 import axios from 'axios';
 import aes from 'aes-js';
 
@@ -8,10 +8,16 @@ export default class History extends Component {
     constructor(props){
         super(props);
         this.getHistories = this.getHistories.bind(this);
-        this.addCase = this.addCase.bind(this);
+        this.addRecord = this.addRecord.bind(this);
         this.renderHistories = this.renderHistories.bind(this);
         this.decryptHistories = this.decryptHistories.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.changeShowHistory = this.changeShowHistory.bind(this);
         this.histories = [];
+        this.state = {
+            showHistory: false
+        }
         /**
          * history structure:
          *  Date
@@ -35,22 +41,26 @@ export default class History extends Component {
         // this.ct = ctInfo.ct;
         // this.patientAddr = patientAddr;
         // this.patientKey = patientKey;
-        this.getHistories("0x20764a436e5864ca703f2792759312f9c00c8af9");
-        console.log(this.histories);
-        this.decryptHistories();
+        // this.decryptHistories();
+        this.patientAddr = '0x20764a436e5864ca703f2792759312f9c00c8af9';
+        
     }
-
+    
+    componentDidMount() {
+        this.getHistories("0x20764a436e5864ca703f2792759312f9c00c8af9").then(response => this.histories = response);
+    }
+    
     getHistories(patientAddr){
         // get history from fake backend
-        axios.get('http://api.com/getHistory/' + patientAddr)
-            .then(response => this.histories = response);
+        return axios.get('http://127.0.0.1:5000/getHistory?address=' + patientAddr).then(response => response.data.result);
         // decrypt patient history
     }
 
-    addCase(){
+    addRecord(){
         var ret;
         this.newCase.patientAddr = this.patientAddr;
-        axios.post('http://api.com/addHistory/', this.newCase).then(function(res, err){
+        console.log(this.newCase);
+        axios.post('http://127.0.0.1:5000/addRecord', this.newCase).then(function(res, err){
             if(err)
                 ret = false;
             else ret = true;
@@ -59,9 +69,9 @@ export default class History extends Component {
     }
 
     decryptHistories(){
-        this.histories.forEach(hist => (
-            console.log(hist)
-        ));
+        // this.histories.forEach(hist => (
+        //     console.log(hist)
+        // ));
     }
 
     encryptNewCase(){
@@ -74,40 +84,38 @@ export default class History extends Component {
 
     handleSubmit(){
         // use api to update
-        this.addCase()
+        this.addRecord()
     }
     renderHistories(){
         return (
             this.histories.map(hist => {
+                console.log(hist)
                 return (
                     <div className="panel" key={hist.date}>
                         <Row>
                             <Col sm={4}>
-                                <p>Date: </p>{new Date(hist.date).getDate() + '/' + new Date(hist.date).getMonth() + '/' + new Date(hist.date).getFullYear()}
+                                <p>Date: {new Date(hist.date).getDate() + '/' + new Date(hist.date).getMonth() + '/' + new Date(hist.date).getFullYear()}</p>
                             </Col>
                             <Col sm={4}>
-                                <p>DoctorID: </p>{hist.doctorID}
+                                <p>DoctorID: {hist.doctorID}</p>
                             </Col>
                             <Col sm={4}>
-                                <p>Hospital: </p>{hist.doctorID}
+                                <p>Hospital: {hist.hospital}</p>
                             </Col>
                         </Row>
                         <Row>
                             <Col sm={12}>
-                                <p>symptom:</p>
-                                <p>{hist.symptom}</p>
+                                <p>Symptom: {hist.symptom}</p>
                             </Col>
                         </Row>
                         <Row>
                             <Col sm={12}>
-                                <p>Suggestion:</p>
-                                <p>{hist.suggestion}</p>
+                                <p>Suggestion: {hist.suggestion}</p>
                             </Col>
                         </Row>
                         <Row>
                             <Col sm={12}>
-                                <p>Treatment:</p>
-                                <p>{hist.treatment}</p>
+                                <p>Treatment: {hist.treatment}</p>
                             </Col>
                         </Row>
                     </div>
@@ -116,11 +124,15 @@ export default class History extends Component {
         )
     }
 
-    render(){       
+    changeShowHistory(){
+        this.setState({showHistory: true})
+    }
+    render(){
         return (
             <div className="MainContent">
                 <h2>History</h2> 
-                {this.renderHistories()}
+                {/* <Button onClick={this.renderHistories()}>Previous History</Button> */}
+                {this.state.showHistory ? this.renderHistories() : <Button onClick={this.changeShowHistory}>Previous History</Button>}
                 <h3>New Case</h3>
                 <Form horizontal onSubmit={this.handleSubmit}>
                     <FormGroup controlId="idWK">
