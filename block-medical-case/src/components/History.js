@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Hist from './History.json';
 import { Form, FormGroup, Col, Row, FormControl, Button, ControlLabel, HelpBlock} from 'react-bootstrap';
+import axios from 'axios';
+import aes from 'aes-js';
 
 export default class History extends Component {
 
@@ -21,6 +22,7 @@ export default class History extends Component {
          *  Treatment
          */
         this.newCase = {
+            patientAddr: '',
             date: 0,
             doctorID: '',
             hospital: '',
@@ -33,22 +35,33 @@ export default class History extends Component {
         // this.ct = ctInfo.ct;
         // this.patientAddr = patientAddr;
         // this.patientKey = patientKey;
-        this.histories = this.getHistories("0x20764a436e5864ca703f2792759312f9c00c8af9");
+        this.getHistories("0x20764a436e5864ca703f2792759312f9c00c8af9");
         console.log(this.histories);
+        this.decryptHistories();
     }
 
     getHistories(patientAddr){
         // get history from fake backend
-        return Hist[patientAddr];
+        axios.get('http://api.com/getHistory/' + patientAddr)
+            .then(response => this.histories = response);
         // decrypt patient history
     }
 
-    addCase(patientAddr){
-
+    addCase(){
+        var ret;
+        this.newCase.patientAddr = this.patientAddr;
+        axios.post('http://api.com/addHistory/', this.newCase).then(function(res, err){
+            if(err)
+                ret = false;
+            else ret = true;
+        });
+        return ret;
     }
 
     decryptHistories(){
-        
+        this.histories.forEach(hist => (
+            console.log(hist)
+        ));
     }
 
     encryptNewCase(){
@@ -60,8 +73,8 @@ export default class History extends Component {
     }
 
     handleSubmit(){
-        this.addCase();
         // use api to update
+        this.addCase()
     }
     renderHistories(){
         return (

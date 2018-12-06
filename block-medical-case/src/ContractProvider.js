@@ -9,7 +9,7 @@ import Doctor from './components/Doctor';
 import Patient from './components/Patient';
 import History from './components/History';
 
-import TPD from './ABI/MCH_ABI.json';
+import MedicalCaseABI from './contract_design/build/contracts/MedicalCase.json';
 class MyContractProvider extends Component{
     constructor(props){
         super(props);
@@ -27,10 +27,10 @@ class MyContractProvider extends Component{
         console.log(this.state)
         this.web3 = web3;
 
-        // *********************** TPD Contract ***************************************
-        this.tpd = TruffleContract(TPD);
-        this.tpd.setProvider(this.web3._provider);
-        this.state.ct = this.tpd.at("0x9073e55193eacbb8e7df06d95524e0bb583fbf9f");
+        // *********************** MedicalCase Contract ***************************************
+        this.mc = TruffleContract(MedicalCaseABI);
+        this.mc.setProvider(this.web3._provider);
+        this.state.ct = this.mc.at("0x673bbbc2c3248ce49d5a661b8a3376478959c3a5");
     }
     render(){
       console.log(this.state.account)

@@ -26,7 +26,7 @@ contract MedicalCase{
         if (addressExist(useraddress) == true){
             return keys[useraddress];
         }
-        return '';  #Not sure what you want to return if key not exists, you can change as you want
+        return '';  //#Not sure what you want to return if key not exists, you can change as you want
         
     }
 }
