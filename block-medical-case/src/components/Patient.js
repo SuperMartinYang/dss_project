@@ -20,7 +20,7 @@ export default class Patient extends Component {
 
     handleSubmit(){
         // call the contract
-
+        this.ct.setKey(this.ctInfo.account, this.state.encryptKey, {from: this.ctInfo.account});
         // windows.location.reload();
     }
     render(){       

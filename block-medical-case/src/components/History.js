@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Col, Row, FormControl, Button, ControlLabel} from 'react-bootstrap';
 import axios from 'axios';
-import aes from 'aes-js';
+import * as CryptoJS from 'crypto-js'
 
 export default class History extends Component {
 
@@ -37,17 +37,23 @@ export default class History extends Component {
             treatment: ''
         }
 
-        // var { ctInfo, patientAddr, patientKey } = this.props;
-        // this.ct = ctInfo.ct;
+        var { ctInfo, patientAddr, patientKey } = this.props;
+        this.ct = ctInfo.ct;
         // this.patientAddr = patientAddr;
         // this.patientKey = patientKey;
         // this.decryptHistories();
         this.patientAddr = '0x20764a436e5864ca703f2792759312f9c00c8af9';
-        
+        this.patientKey = 'Hello';
+        var crypted = CryptoJS.AES.encrypt('ABC', this.patientKey);
+        console.log("Crypt str: ", crypted);
+        console.log(CryptoJS.AES.decrypt(crypted.toString(), this.patientKey).toString(CryptoJS.enc.Utf8))
+        // this.decryptHistories();
     }
     
     componentDidMount() {
-        this.getHistories("0x20764a436e5864ca703f2792759312f9c00c8af9").then(response => this.histories = response);
+        this.getHistories("0x20764a436e5864ca703f2792759312f9c00c8af9").then(histories =>
+            histories.map(hist => this.histories.push(this.decryptHistories(hist)))
+        ).then(res=> console.log(this.histories));
     }
     
     getHistories(patientAddr){
@@ -58,6 +64,7 @@ export default class History extends Component {
 
     addRecord(){
         var ret;
+        this.encryptNewCase();
         this.newCase.patientAddr = this.patientAddr;
         console.log(this.newCase);
         axios.post('http://127.0.0.1:5000/addRecord', this.newCase).then(function(res, err){
@@ -68,14 +75,23 @@ export default class History extends Component {
         return ret;
     }
 
-    decryptHistories(){
-        // this.histories.forEach(hist => (
-        //     console.log(hist)
-        // ));
+    decryptHistories(hist){
+        hist.date = CryptoJS.AES.decrypt(hist.date, this.patientKey).toString(CryptoJS.enc.Utf8);
+        hist.doctorID = CryptoJS.AES.decrypt(hist.doctorID, this.patientKey).toString(CryptoJS.enc.Utf8);
+        hist.hospital = CryptoJS.AES.decrypt(hist.hospital, this.patientKey).toString(CryptoJS.enc.Utf8);
+        hist.symptom = CryptoJS.AES.decrypt(hist.symptom, this.patientKey).toString(CryptoJS.enc.Utf8);
+        hist.suggestion = CryptoJS.AES.decrypt(hist.suggestion, this.patientKey).toString(CryptoJS.enc.Utf8);
+        hist.treatment = CryptoJS.AES.decrypt(hist.treatment, this.patientKey).toString(CryptoJS.enc.Utf8);
+        return hist;
     }
 
     encryptNewCase(){
-
+        this.newCase.date = CryptoJS.AES.encrypt(this.newCase.date, this.patientKey).toString();
+        this.newCase.doctorID = CryptoJS.AES.encrypt(this.newCase.doctorID, this.patientKey).toString();
+        this.newCase.hospital = CryptoJS.AES.encrypt(this.newCase.hospital, this.patientKey).toString();
+        this.newCase.symptom = CryptoJS.AES.encrypt(this.newCase.symptom, this.patientKey).toString();
+        this.newCase.suggestion = CryptoJS.AES.encrypt(this.newCase.suggestion, this.patientKey).toString();
+        this.newCase.treatment = CryptoJS.AES.encrypt(this.newCase.treatment, this.patientKey).toString();
     }
 
     handleChange(val, key){
@@ -180,7 +196,7 @@ export default class History extends Component {
                             Treatment: 
                         </Col>
                         <Col sm={8}>
-                            <FormControl type="text" placeholder="WhisperKey" onChange={e => this.handleChange(e.target.value, 'whisperKey')}/>
+                            <FormControl type="text" placeholder="Treatment" onChange={e => this.handleChange(e.target.value, 'treatment')}/>
                         </Col>
                     </FormGroup>
                     <FormGroup>

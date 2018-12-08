@@ -16,6 +16,13 @@ export default class Doctor extends Component {
     }
 
     handleSubmit(){
+        // this.ct.getKey(this.state.patientAddr, {from: this.ctInfo.account}).then(res => 
+        //     this.context.router.push({
+        //         pathname: '/hisotry',
+        //         state: {patientAddr: this.state.patientAddr, patientKey: res}
+        //     })
+        // )
+        this.ct.getKey(this.state.patientAddr, {from: this.ctInfo.account}).then(res=>console.log(res));
         // route to history with the patient key getted and patient addr
     }
     render(){       
