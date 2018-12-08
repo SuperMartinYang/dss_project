@@ -14,26 +14,25 @@ class MyContractProvider extends Component{
     constructor(props){
         super(props);
         // web3
+        this.state = {
+          account: '',
+          ct: null
+        }
         var {web3} = this.props;
         console.log(web3);
         web3.eth.getAccounts((error, accounts) => {
           this.state.account = accounts[0];
           web3.eth.defaultAccount = this.state.account;
         });
-        this.state = {
-          account: '',
-          ct: null
-        }
         console.log(this.state)
         this.web3 = web3;
 
         // *********************** MedicalCase Contract ***************************************
         this.mc = TruffleContract(MedicalCaseABI);
         this.mc.setProvider(this.web3._provider);
-        this.state.ct = this.mc.at("0x8f40e5904be33e7bea37cda7968847b8b7ace20f");
+        this.state.ct = this.mc.at("0x5b7a3ad8cd4b5773bdfb6e0e5b2893b38dbe7e5f");
     }
     render(){
-      console.log(this.state.account)
       return (
         <div>
           <Route exact path='/' component={Home}/>

@@ -16,7 +16,9 @@ export default class History extends Component {
         this.changeShowHistory = this.changeShowHistory.bind(this);
         this.histories = [];
         this.state = {
-            showHistory: false
+            showHistory: false,
+            patientAddr: '',
+            patientKey: ''
         }
         /**
          * history structure:
@@ -37,13 +39,23 @@ export default class History extends Component {
             treatment: ''
         }
 
-        var { ctInfo, patientAddr, patientKey } = this.props;
+        var { ctInfo } = this.props;
+
         this.ct = ctInfo.ct;
         // this.patientAddr = patientAddr;
         // this.patientKey = patientKey;
         // this.decryptHistories();
-        this.patientAddr = '0x20764a436e5864ca703f2792759312f9c00c8af9';
-        this.patientKey = 'Hello';
+        if (this.props.location.state !== undefined){
+            console.log('Set done');
+            this.patientAddr =  this.props.location.state.patientAddr;
+            this.patientKey = this.props.location.state.patientKey;
+            localStorage.setItem('patientAddr', this.patientAddr);
+            localStorage.setItem('patientKey', this.patientKey);
+        }else {
+            this.patientAddr = localStorage.getItem('patientAddr');
+            this.patientKey = localStorage.getItem('patientKey');
+        }
+        console.log('ADDR & KEY', this.patientAddr, this.patientKey);
         var crypted = CryptoJS.AES.encrypt('ABC', this.patientKey);
         console.log("Crypt str: ", crypted);
         console.log(CryptoJS.AES.decrypt(crypted.toString(), this.patientKey).toString(CryptoJS.enc.Utf8))
@@ -51,7 +63,7 @@ export default class History extends Component {
     }
     
     componentDidMount() {
-        this.getHistories("0x20764a436e5864ca703f2792759312f9c00c8af9").then(histories =>
+        this.getHistories(this.patientAddr).then(histories =>
             histories.map(hist => this.histories.push(this.decryptHistories(hist)))
         ).then(res=> console.log(this.histories));
     }

@@ -1,4 +1,4 @@
-pragma solidity >=0.4.22 <0.6.0;
+pragma solidity ^0.4.15;
 contract MedicalCase{
     mapping(address => string) private keys;
     address[] private userAddresses;
@@ -12,21 +12,18 @@ contract MedicalCase{
         return false;
     }
     
-    function setKey(address useraddress,string memory userkey) public returns (bool){
-        if (addressExist(useraddress) == true){
-            return false;   
+    function setKey(address useraddress, string userkey) public {
+        if (addressExist(useraddress) != true){
+            keys[useraddress] =userkey;
+            userAddresses.push(useraddress);
         }
-        keys[useraddress] =userkey;
-        
-        userAddresses.push(useraddress);
-        return true;
     }
     
-    function getKey(address useraddress) public returns (string memory){
+    function getKey(address useraddress) public constant returns (string key){
         if (addressExist(useraddress) == true){
             return keys[useraddress];
         }
-        return '';  //#Not sure what you want to return if key not exists, you can change as you want
+        return '';
         
     }
 }

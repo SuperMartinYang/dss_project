@@ -11,6 +11,7 @@ export default class Patient extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         // get contract from props
         var {ctInfo} = this.props;
+        this.ctInfo = ctInfo;
         this.ct = ctInfo.ct;
     }
 
