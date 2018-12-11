@@ -2,4 +2,4 @@
 Course Projects
 
 # Work flow
-![workflow](./workflow.png)
+![workflow](workflow.png)
