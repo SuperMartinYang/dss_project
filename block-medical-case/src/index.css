@@ -17,11 +17,11 @@ code {
   padding: 2% 10% 10% 5%;
 }
 .content {
-  background-color: darkseagreen;
+  background-color: white;
   min-height: 900px;
 }
 .panel {
-  background-color: lightskyblue;
+  background-color: #e8e8e8;
 }
 
 .buttonPanel {

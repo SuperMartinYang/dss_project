@@ -30,7 +30,7 @@ class MyContractProvider extends Component{
         // *********************** MedicalCase Contract ***************************************
         this.mc = TruffleContract(MedicalCaseABI);
         this.mc.setProvider(this.web3._provider);
-        this.state.ct = this.mc.at("0x5b7a3ad8cd4b5773bdfb6e0e5b2893b38dbe7e5f");
+        this.state.ct = this.mc.at("0x0116e5f36fdb23b0f49e120eb7d98ea709de0fed");
     }
     render(){
       return (
